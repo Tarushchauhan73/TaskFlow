@@ -1,21 +1,21 @@
 # TaskFlow
 
-A simple full-stack to-do app built with **React**, **Node/Express**, and **MongoDB**.
+A simple full-stack to-do app built with **React**, **Python (Flask)**, and **MongoDB**.
 
 ## Stack
 
 - **Frontend:** React + Vite
-- **Backend:** Node.js + Express
-- **Database:** MongoDB (Mongoose)
-- **Tests:** Jest + Supertest
-- **CI:** GitHub Actions (tests + ESLint)
+- **Backend:** Python + Flask
+- **Database:** MongoDB (PyMongo)
+- **Tests:** Pytest + mongomock
+- **CI:** GitHub Actions (tests + lint)
 - **Containers:** Docker & Docker Compose
 
 ## Project structure
 
 ```
 TaskFlow/
-├── backend/     # Express API
+├── backend/     # Flask API
 ├── frontend/    # React app
 └── docker-compose.yml
 ```
@@ -26,8 +26,10 @@ TaskFlow/
 ```bash
 cd backend
 cp .env.example .env
-npm install
-npm run dev
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements-dev.txt
+python run.py
 ```
 
 **Frontend** (in a new terminal)
@@ -64,16 +66,18 @@ docker compose up --build
 
 ```bash
 cd backend
-npm test
+source venv/bin/activate
+pytest
 ```
 
 ## Linting
 
 ```bash
-npm run lint    # run inside backend/ or frontend/
+cd backend && flake8 .     # Python backend
+cd frontend && npm run lint  # React frontend
 ```
 
 ## CI
 
-- **`.github/workflows/test.yml`** — runs backend tests on every push to `main`.
-- **`.github/workflows/lint.yml`** — runs ESLint on the backend and frontend on pushes and pull requests.
+- **`.github/workflows/test.yml`** — runs backend tests (pytest) on every push to `main`.
+- **`.github/workflows/lint.yml`** — runs flake8 on the backend and ESLint on the frontend, on pushes and pull requests.
