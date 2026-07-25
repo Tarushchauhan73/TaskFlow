@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: taskflow-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -b 0.0.0.0:$PORT run:app
+    envVars:
+      - key: MONGO_URI
+        sync: false
