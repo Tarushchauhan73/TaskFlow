@@ -101,19 +101,3 @@ cd frontend && npm run lint  # React frontend
 3. Push to `main` (or re-run the "Deploy Frontend to GitHub Pages" workflow) — the site will be published at:
    `https://tarushchauhan73.github.io/TaskFlow/`
 
-## Troubleshooting
-
-**"Could not reach the server" / tasks not loading**
-Render's free tier spins services down after 15 minutes of inactivity. The first request afterward can take 30-60s to wake it back up. This is expected — just wait and retry. Visiting `<your-render-url>/api/health` first "primes" the service before you use the app.
-
-**Backend deploy fails with an SSL/TLS error connecting to MongoDB** (`SSL: TLSV1_ALERT_INTERNAL_ERROR`)
-This happens if Render assigns a very new Python version that's incompatible with pymongo's TLS handling. Fix: pin the Python version via the `PYTHON_VERSION` env var in `render.yaml` (already set to `3.12.7` in this repo) and keep pymongo reasonably current in `requirements.txt`.
-
-**Backend returns a 500 error on `/api/todos`, logs show `pymongo.errors.ServerSelectionTimeoutError` hanging until a worker timeout**
-This means MongoDB Atlas is rejecting the connection at the network level — almost always because its **IP Access List** doesn't include Render's IP. Since Render's free tier doesn't have a fixed outbound IP, add `0.0.0.0/0` to Atlas's Network Access list (see the Deployment section above).
-
-**`pymongo.errors.ConfigurationError: No default database defined`**
-The MongoDB Atlas connection string doesn't include a database name in the path. This repo works around it by explicitly selecting the database in code (`backend/app/db.py`) rather than relying on the URI, so this shouldn't occur — but if you see it elsewhere, add a database name to the URI or set `MONGO_DB_NAME`.
-
-**Visiting `tarushchauhan73.github.io` (no path) shows something unrelated to TaskFlow**
-That bare URL is reserved for your GitHub "user site" repo, if you have one. TaskFlow is a project site and only lives at `tarushchauhan73.github.io/TaskFlow/` (note the trailing path).
