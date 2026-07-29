@@ -11,3 +11,5 @@ services:
         sync: false
       - key: PYTHON_VERSION
         value: 3.12.7
+      - key: SECRET_KEY
+        generateValue: true

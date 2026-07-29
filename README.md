@@ -1,6 +1,6 @@
 # TaskFlow
 
-A simple full-stack to-do app built with **React**, **Python (Flask)**, and **MongoDB**.
+A simple full-stack to-do app with user accounts, built with **React**, **Python (Flask)**, and **MongoDB**. Each user logs in and only sees their own tasks.
 
 ## Stack
 
@@ -54,13 +54,18 @@ docker compose up --build
 
 ## API endpoints
 
-| Method | Endpoint          | Description       |
-|--------|-------------------|--------------------|
-| GET    | `/api/todos`      | Get all todos      |
-| GET    | `/api/todos/:id`  | Get one todo       |
-| POST   | `/api/todos`      | Create a todo      |
-| PUT    | `/api/todos/:id`  | Update a todo      |
-| DELETE | `/api/todos/:id`  | Delete a todo      |
+| Method | Endpoint             | Auth required | Description         |
+|--------|-----------------------|:--------------:|----------------------|
+| POST   | `/api/auth/register`  | No             | Create an account     |
+| POST   | `/api/auth/login`     | No             | Log in, get a token   |
+| GET    | `/api/auth/me`        | Yes            | Get current user      |
+| GET    | `/api/todos`          | Yes            | Get your todos        |
+| GET    | `/api/todos/:id`      | Yes            | Get one todo          |
+| POST   | `/api/todos`          | Yes            | Create a todo         |
+| PUT    | `/api/todos/:id`      | Yes            | Update a todo         |
+| DELETE | `/api/todos/:id`      | Yes            | Delete a todo         |
+
+Authenticated requests need an `Authorization: Bearer <token>` header, using the token returned from register/login. Tokens expire after 7 days.
 
 ## Testing
 
@@ -92,8 +97,10 @@ cd frontend && npm run lint  # React frontend
 
 **Backend — Render**
 1. Go to [render.com](https://render.com) → New → Blueprint, and point it at this repo (it will read `render.yaml`).
-2. When prompted, set the `MONGO_URI` environment variable to your Atlas connection string.
+2. When prompted, set the `MONGO_URI` environment variable to your Atlas connection string. `SECRET_KEY` (used to sign login tokens) is generated automatically — no action needed.
 3. Once deployed, copy the service URL (e.g. `https://taskflow-backend.onrender.com`).
+
+If you already have this service deployed from before auth was added, go to the service's **Environment** tab in Render and add `SECRET_KEY` manually (any long random string), since existing services don't auto-pick-up new blueprint variables.
 
 **Frontend — GitHub Pages**
 1. In this repo: Settings → Pages → Source → **GitHub Actions**.
